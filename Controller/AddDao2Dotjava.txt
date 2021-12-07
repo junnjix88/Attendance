@@ -1,0 +1,154 @@
+package controller;
+
+import java.sql.*;  
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class AddDao2{ 
+        
+public static String Add(int id31, String f1, String f2, String value0, String values, String _submit, int d10, String comment3) throws SQLException{
+    
+        Connection con;
+
+        PreparedStatement pst;
+        int duration1;
+    try {
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila","YourDBUser","Yourpassword");
+                        pst = con.prepareStatement("insert into Attendance(id, FirstName, FamilyName, Date, Time, InOut1, Duration, Comment) values(?,?,?,?,?,?,?,?)");
+                        pst.setInt(1, id31);
+                        pst.setString(2, f1);
+                        pst.setString(3, f2);
+                        pst.setString(4, value0);
+                        pst.setString(5, values);
+                        pst.setString(6, _submit);
+                        pst.setInt(7, d10);
+                        pst.setString(8, comment3);
+                        pst.executeUpdate();
+						
+                  con.close(); pst.close();      
+
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(AddDao2.class.getName()).log(Level.SEVERE, null, ex);
+
+    }
+    
+                java.sql.Connection conn = null;
+                java.sql.Connection conn2 = null;
+                ResultSet rs3 = null;
+
+                ResultSet rs2 = null;
+                int hourin=0;
+                int hourout=0;
+                double minutein=0;
+                double minuteout=0; 
+               
+
+    try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila","YourDBUser","YourPassword");
+            String query = "SELECT * FROM `Attendance` WHERE date='"+value0+"' and id='"+id31+"' order by atid asc limit 1"; 
+            
+            try (Statement st4 = conn.createStatement()) {
+                rs2 = st4.executeQuery(query);
+                
+                while (rs2.next()) {
+                    
+                    
+                   String time41 = rs2.getString("Time");
+                 
+                   String hour1 = time41.replaceAll(":","");
+                   String hour2 =  hour1.substring(0,2);
+                   hourin=Integer.parseInt(hour2);
+                   
+                   String minute1 = hour1.substring(2,4);
+                   minutein=Double.parseDouble(minute1);
+                    
+                }
+                conn.close(); rs2.close();
+            }
+            
+            
+            
+            
+        }   catch (ClassNotFoundException ex) 
+            {
+            Logger.getLogger(AddDao2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    
+    try {
+        Class.forName("com.mysql.jdbc.Driver");
+        conn2 = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila","YourDBUser","YourPassword");
+        String query3 = "SELECT * FROM `Attendance` WHERE date='"+value0+"' and id='"+id31+"' order by atid desc limit 1";
+       
+          try (Statement st5 = conn2.createStatement()) {
+              
+                rs3 = st5.executeQuery(query3);
+                
+                while (rs3.next()) {
+                    
+                    
+                   String time41 = rs3.getString("Time");                
+                   String hour1 = time41.replaceAll(":","");
+                   String hour2 =  hour1.substring(0,2);
+                   hourout=Integer.parseInt(hour2);
+                   
+                   String minute2 = hour1.substring(2,4);
+                   minuteout=Double.parseDouble(minute2);
+                    
+                }
+                conn2.close(); rs3.close(); st5.close();
+            }
+               
+        
+        } catch (ClassNotFoundException ex) 
+        {
+        Logger.getLogger(AddDao2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+     if (hourout-hourin > 1 && minuteout < minutein)
+        {
+        int dura3 = hourout - hourin;
+        int dura9 = dura3 - 1;
+        duration1=dura9;
+        
+        
+        }
+        else{
+     
+             if (hourout-hourin >= 1 && minuteout >= minutein)
+                    {
+                    int dura3 = hourout - hourin;
+                    int dura10 = dura3;
+                    duration1=dura10;
+
+                    }
+     
+                    else{
+
+                            duration1=0;   
+                        }
+             }
+        
+    try {
+
+      
+        Class.forName("com.mysql.jdbc.Driver");
+        con = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila","YourDBUser","YourPassword");
+        pst = con.prepareStatement("UPDATE `Attendance` SET Duration = ? WHERE id = ? AND Date = ?");
+        pst.setInt(1, duration1);
+        pst.setInt(2,id31);
+        pst.setString(3, value0);
+        pst.executeUpdate();  
+        
+        con.close(); pst.close();
+     
+        }catch (ClassNotFoundException ex) {
+        Logger.getLogger(AddDao2.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println(ex);
+       }
+    
+return null;
+} 
+ 
+}

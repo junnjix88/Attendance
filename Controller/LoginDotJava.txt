@@ -1,0 +1,149 @@
+
+package controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Cecilio
+ */
+@WebServlet(name = "Login", urlPatterns = {"/Login"})
+public class Login extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            String _username = request.getParameter("username");
+            String _password = request.getParameter("password");
+            
+                  Date currentDate = GregorianCalendar.getInstance().getTime();
+                  DateFormat df = DateFormat.getDateInstance();
+                  String dateString = df.format(currentDate);
+
+                  Date d = new Date();
+                  SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                  String timeString = sdf.format(d);
+
+                  String values = dateString;
+                  
+                  int errcount=3;
+ 
+            if(_username != null && _password != null){
+
+
+                try {
+                    if(loginDao.validate(_username, _password)){
+                                               
+                      try {
+                            if (errcountDao.errcount(_username, errcount)) {
+                                
+                                RequestDispatcher rd = request.getRequestDispatcher("wronglogin/wronglogin.jsp");
+                                rd.forward(request, response);  
+                            }
+                            
+                            else{
+                            
+                                session.setAttribute("name","logged");
+                                session.setAttribute("name2",_username);
+                                session.setAttribute("name3",_password);
+                                session.setAttribute("date10", values);
+                                RequestDispatcher rd = request.getRequestDispatcher("Attend2.jsp");
+                                rd.forward(request, response); 
+
+                                ercountreset errcount5 = new ercountreset();
+                                errcount5.resetEr(_username, 0);
+                            
+                            }
+                            
+                        } catch (Exception e) {
+                        }                        
+                        
+                    }
+                    else{
+
+
+                        try {
+                            if (errcountDao.errcount(_username, errcount)) {
+                                
+                                RequestDispatcher rd = request.getRequestDispatcher("wronglogin/wronglogin.jsp");
+                                rd.forward(request, response);                                
+                            }
+                            
+                            else{}
+                            
+                            if ("515980admin".equals(_username) && "eankyle1828".equals(_password))
+                                {
+                                    
+                                session.setAttribute("name","logged");
+                                session.setAttribute("name2",_username);
+                                session.setAttribute("name3",_password);
+                                session.setAttribute("date10", values);
+                                  response.sendRedirect("adminconsole4_1.jsp");                                                                 
+                                }
+                            
+                            else {
+                                
+                                LoginErr2 error8 = new LoginErr2();
+                                error8.countErr(_username);
+                                
+                                response.setContentType("text/html");
+                                PrintWriter pw = response.getWriter();
+                                pw.println("<script type=\"text/javascript\">");
+                                pw.println("alert('Invalid Username or Password');");
+                                pw.println("</script>");
+                                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+                                rd.include(request, response);
+                                
+                            }
+                        } catch (ServletException servletException) {
+                        } catch (IOException iOException) {
+                        }
+
+
+                        
+                    }
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+            }
+             else{
+                
+                
+                
+                   out.println("Empty username and password");
+
+                     }
+            }
+        
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+}

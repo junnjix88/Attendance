@@ -1,0 +1,29 @@
+package controller;
+
+import java.sql.*;  
+import static java.lang.System.out;
+
+public class loginDao {
+
+public static boolean validate(String name,String pass) throws ClassNotFoundException, SQLException{  
+boolean status=false;  
+try{  
+Class.forName("com.mysql.jdbc.Driver");  
+Connection con=DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila","Youruser","Yourpassword");       
+PreparedStatement ps=con.prepareStatement("select name from userinfo where name=? and password=?");
+
+ps.setString(1,name);  
+ps.setString(2,pass);
+      
+ResultSet rs=ps.executeQuery();  
+status=rs.next();  
+
+}catch(Exception e){
+
+        System.out.println(e); out.print("Sorry username or password error");
+
+}  
+return status;  
+} 
+
+}

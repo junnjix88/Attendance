@@ -1,0 +1,212 @@
+
+package controller;
+
+import java.sql.*; 
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;  
+import java.util.Date;
+
+/**
+ *
+ * @author Cecilio
+ */
+
+public class DownloadreportDaoF {
+             int id100;
+             int id101;
+             
+             String cdate;
+             String cdate2;
+             
+             
+ 
+    public void downloadReport(String day1, String day2) throws IOException{
+        
+        try {
+            
+            
+                 String date9 = day1;
+                 String date10 = day2;
+
+                 String date20 = date9.replaceAll("-", "/");                 
+                 
+                String strDate = null;           
+                Date date = new Date(date20);                
+                SimpleDateFormat formatter = new SimpleDateFormat(date20);  
+                                                                
+                formatter = new SimpleDateFormat("MMM dd, yyyy");                
+                strDate = formatter.format(date);
+                String cdate10 = strDate;
+                
+                 String date21 = cdate10.replaceAll(" 01,", " 1,");
+                 String date22 = date21.replaceAll(" 02,", " 2,");
+                 String date23 = date22.replaceAll(" 03,", " 3,");
+                 String date24 = date23.replaceAll(" 04,", " 4,");
+                 String date25 = date24.replaceAll(" 05,", " 5,");
+                 String date26 = date25.replaceAll(" 06,", " 6,");
+                 String date27 = date26.replaceAll(" 07,", " 7,");
+                 String date28 = date27.replaceAll(" 08,", " 8,");
+                 String date29 = date28.replaceAll(" 09,", " 9,");
+
+            
+            Connection con;
+            ResultSet rs;
+            
+
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila", "YourDBUser", "YourDBpassword");
+                     
+            String query = "SELECT DATE, MIN(atid) from Attendance WHERE Date = '"+date29+"'";
+            try (Statement st = con.createStatement()) {
+                rs = st.executeQuery(query);
+                
+                while (rs.next()) {
+                    
+                    
+                    int id = rs.getInt(2);
+                    id100=id;
+                    
+                }
+                con.close(); rs.close();
+            }
+        } catch (ClassNotFoundException | SQLException classNotFoundException) {
+        }
+
+try {
+    
+                 String date9 = day1;
+                 String date10 = day2;
+
+                 String date21 = date10.replaceAll("-", "/");
+                 
+				String strDate2 = null;
+         
+                Date date11 = new Date(date21);                
+                SimpleDateFormat formatter2 = new SimpleDateFormat(date21);                             
+                
+                formatter2 = new SimpleDateFormat("MMM dd, yyyy");                
+                strDate2 = formatter2.format(date11);
+                String cdate20 = strDate2;
+                
+                 String date51 = cdate20.replaceAll(" 01,", " 1,");
+                 String date52 = date51.replaceAll(" 02,", " 2,");
+                 String date53 = date52.replaceAll(" 03,", " 3,");
+                 String date54 = date53.replaceAll(" 04,", " 4,");
+                 String date55 = date54.replaceAll(" 05,", " 5,");
+                 String date56 = date55.replaceAll(" 06,", " 6,");
+                 String date57 = date56.replaceAll(" 07,", " 7,");
+                 String date58 = date57.replaceAll(" 08,", " 8,");
+                 String date59 = date58.replaceAll(" 09,", " 9,");
+
+         
+            Connection con2;
+            ResultSet rs2;
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con2 = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila", "YourDBUser", "YourDBpassword");
+            
+            String query2 = "SELECT DATE, MAX(atid) from Attendance WHERE Date = '"+date59+"'";
+            try (Statement st2 = con2.createStatement()) {
+                rs2 = st2.executeQuery(query2);
+                
+                while (rs2.next()) {
+                    
+                    
+                    int id = rs2.getInt(2);
+                    id101=id;
+                    
+                }
+                
+                con2.close(); rs2.close();
+            }
+        } catch (ClassNotFoundException | SQLException classNotFoundException) {
+        }
+                              
+	  String fileName = "csv_file";
+      File file = new File("//YourFileServer/MyShare/"+fileName+".csv");
+
+    Connection conn = null;
+    String url = "jdbc:mysql://YourDB_IP/";
+    String dbName = "sakila";
+    String driver = "com.mysql.jdbc.Driver";
+    String userName = "YourDBUser";
+    String password = "YourPassword";
+    Statement stmt;
+try
+{
+FileWriter fw = new FileWriter(file);
+fw.append("atid");
+fw.append(',');
+fw.append("Id");
+fw.append(',');
+fw.append("FirstName");
+fw.append(',');
+fw.append("FamilyName");
+fw.append(',');
+fw.append("Date");
+fw.append(',');
+fw.append("Time");
+fw.append(',');
+fw.append("InOut");
+fw.append(',');
+fw.append("Duration");
+fw.append(',');
+fw.append("Comment");
+fw.append(',');
+fw.append('\n');
+Class.forName(driver).newInstance();
+conn = DriverManager.getConnection(url+dbName,userName,password);
+String query = "select * from Attendance where atid >= '"+id100+"' && atid <= '"+id101+"'";
+stmt = conn.createStatement();
+ResultSet rs3 = stmt.executeQuery(query);
+while(rs3.next())
+{
+    String id10 = Integer.toString(rs3.getInt(1));
+    fw.append((id10));
+    fw.append(',');
+    String id9 = Integer.toString(rs3.getInt(2));
+    fw.append((id9));
+    fw.append(',');
+    fw.append(rs3.getString(3));
+    fw.append(',');
+    fw.append(rs3.getString(4));
+    fw.append(',');
+    String date9 = (rs3.getString(5));
+    String date10 = date9.replaceAll(",", "");
+    fw.append(date10);
+    fw.append(',');
+    fw.append(rs3.getString(6));
+    fw.append(',');
+    fw.append(rs3.getString(7));
+    fw.append(',');
+    String d9 = Integer.toString(rs3.getInt(8));
+    fw.append(d9);
+    fw.append(',');
+    fw.append(rs3.getString(9));
+    fw.append('\n');
+    
+    
+}
+fw.flush();
+fw.close();
+conn.close();
+rs3.close();
+stmt.close();
+} catch (Exception e) {
+e.printStackTrace();
+
+}
+      
+        
+    
+                                                      } 
+    
+    }
+    
+
+    
+

@@ -1,0 +1,83 @@
+package controller;
+
+import java.sql.*; 
+import java.io.*;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import au.com.bytecode.opencsv.CSVReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+/**
+ *
+ * @author Cecilio
+ */
+public class csvattendupload {
+   String path10 = null; 
+    public void csvAdd1(String filepath1) throws IOException{
+    
+                Connection con;
+                PreparedStatement pst = null;    
+        try {
+                       
+            String inputCSVFile = filepath1;
+            CSVReader reader = null;
+            
+            try {
+                reader = new CSVReader(new FileReader(inputCSVFile));
+            } catch (FileNotFoundException fileNotFoundException) {
+            }
+            String [] nextLine;
+			
+         try{   
+             while ((nextLine = reader.readNext()) != null) 
+                   {
+                    lnNum++;
+                   
+                    int dd = Integer.parseInt(nextLine[0]);
+                    String d2 = nextLine[1];
+                    String d3 = nextLine[2];
+                    String d4 = nextLine[3];
+                    String d5 = nextLine[4];
+                    String d6 = nextLine[5];
+                    int d7 = Integer.parseInt(nextLine[6]);
+                    String d8 = nextLine[7];
+          
+                       try {
+                           Class.forName("com.mysql.jdbc.Driver");
+                           con = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila", "YourDBUser", "YourDBpassword");
+                           pst = con.prepareStatement("insert into Attendance(id, FirstName, FamilyName, Date, Time, InOut1, Duration, Comment) values(?,?,?,?,?,?,?,?)");
+                           
+                           pst.setInt(1,dd);
+                           pst.setString(2,d2);
+                           pst.setString(3,d3);
+                           pst.setString(4,d4);
+                           pst.setString(5,d5);
+                           pst.setString(6,d6);
+                           pst.setInt(7,d7);
+                           pst.setString(8,d8);
+                           pst.executeUpdate();
+                           } 
+                       catch (SQLException sQLException) {
+                                                          }
+                   
+                   
+                   }
+
+        
+             } catch (IOException ex) {
+                        Logger.getLogger(csvattendupload.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                  
+         
+            } 
+        
+            catch (ClassNotFoundException classNotFoundException) {
+                                                                  } 
+    
+    }
+    
+
+    
+}

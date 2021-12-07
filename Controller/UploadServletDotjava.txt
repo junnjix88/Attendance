@@ -1,0 +1,62 @@
+package controller;
+
+import com.oreilly.servlet.MultipartRequest;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Cecilio
+ */
+@MultipartConfig
+@WebServlet(name = "UploadServlet", urlPatterns = {"/UploadServlet"})
+public class UploadServlet extends HttpServlet {
+
+  
+  private static final long serialVersionUID = 1L;
+  
+  public void init() throws ServletException
+  {
+      System.out.println("______________________________");
+      System.out.println(" Init method is called " + this.getClass().getName());
+      System.out.println("_______________________________");
+      
+  }
+ 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+             
+        out.println("successfully uploaded");
+        response.sendRedirect("adminconsole4.jsp"); 
+        
+        String path ="//YourFileServer_IP/public/userinfo.csv";
+        String path2 ="//YourFileServer_IP/public/Attendance.csv";
+        
+        csvuserupload userupload1 = new csvuserupload();
+        userupload1.csvAdd(path);
+
+        csvattendupload attendupload1 = new csvattendupload();
+        attendupload1.csvAdd1(path2);
+
+        
+    }
+            
+     public void destroy()
+     {
+     
+      System.out.println("______________________________");
+      System.out.println(" destroy method is called" + this.getClass().getName());
+      System.out.println("_______________________________");
+  
+     }
+
+}

@@ -1,0 +1,78 @@
+package controller;
+
+import java.sql.*; 
+import java.io.*;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import au.com.bytecode.opencsv.CSVReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+/**
+ *
+ * @author Cecilio
+ */
+public class csvuserupload {
+   String path10 = null; 
+    public void csvAdd(String filepath) throws IOException{
+    
+                Connection con=null;
+                PreparedStatement pst = null;
+      
+        try {
+                       
+            String inputCSVFile = filepath;
+            CSVReader reader = null;
+            
+            try {
+                reader = new CSVReader(new FileReader(inputCSVFile));
+            } catch (FileNotFoundException fileNotFoundException) {
+            }
+            String [] nextLine;
+         try{   
+             while ((nextLine = reader.readNext()) != null) 
+                   {
+                    lnNum++;
+                   
+                    String dd = nextLine[0];
+                    String d2 = nextLine[1];
+                    String d3 = nextLine[2];
+                    String d4 = nextLine[3];
+                    int d5 = Integer.parseInt(nextLine[4]);
+           
+                       try {
+                           Class.forName("com.mysql.jdbc.Driver");
+                           con = DriverManager.getConnection("jdbc:mysql://YourDB_IP/sakila", "YourDBUser", "Yourpassword");
+                           pst = con.prepareStatement("insert into userinfo(name, email, security, password, logincount) values(?,?,?,?,?)");
+                           
+                           pst.setString(1,dd);
+                           pst.setString(2,d2);
+                           pst.setString(3,d3);
+                           pst.setString(4,d4);
+                           pst.setInt(5,d5);
+                           pst.executeUpdate();
+                           } catch (SQLException sQLException) {
+                       }
+                   
+                   con.close(); pst.close();
+                   }
+
+        
+             } catch (IOException ex) {
+                        Logger.getLogger(csvuserupload.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(csvuserupload.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                  
+         
+            } 
+        
+            catch (ClassNotFoundException classNotFoundException) {
+                                                                  } 
+    
+    }
+    
+
+    
+}

@@ -1,0 +1,63 @@
+
+package controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Cecilio
+ */
+@WebServlet(name = "submit2", urlPatterns = {"/submit2"})
+public class submit2 extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {                
+
+                 String test = "//FileServer_IP/public/userinfo.csv";
+                 String test2 = "//FileSErver_IP/public/Attendance.csv";
+                
+                csvuserupload upload1 = new csvuserupload();
+                upload1.csvAdd(test);
+                
+                try {
+                    csvattendupload upload2 = new csvattendupload();
+                    upload2.csvAdd1(test2);
+                    response.sendRedirect("adminconsole4.jsp"); 
+                    
+                } catch (IOException iOException) {
+                }
+                
+                PrintWriter pw = response.getWriter();
+                pw.println("<script type=\"text/javascript\">");
+                pw.println("alert('worng path ');" + test);
+                pw.println("</script>");
+            }
+
+                              
+        
+           
+        } catch (IOException iOException) {
+        } 
+    }
+
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
+
+
+}
